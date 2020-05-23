@@ -3,10 +3,23 @@
 //CURRENTLY NOT WORKING.
 const Circus = (() => {
     var scriptName = "Roustabout";
-    var version = "1.2";
+    
+    //Make a text object and return its ID.
+    makeText = (x, y, defaultText) => {
+        let newObj = createObj('text', {
+            pageid: Campaign().get("playerpageid"),
+            layer: "objects",
+            top: y,
+            left: x,
+            text: defaultText,
+            font_family: "Patrick Hand",
+            font_size: 32
+        });
+        return newObj.id;
+    }
 
     //Define the chat menu here.
-    chatMenu = function() {
+    chatMenu = () => {
         sendChat(scriptName, "/w gm &{template:rolls} {{header=Circus Updater}} {{desc=**Basic Stats** <br />"
         + "[Settlement Name](!circus change settlementName &#34;?{Settlement Name}&#34;) "
         + "[Circus Name](!circus change circusName &#34;?{Circus Name}&#34;) "
@@ -109,10 +122,178 @@ const Circus = (() => {
                 });
                 return;
             }
-            
+            // =====================FUNCTIONALITY=====================
+            // =========CALL MENU===================
             if (params[1] == "menu"){ chatMenu(); }
+            
+            //==========(NEW) initialize==========
+            if (params[1] == "init") {
+                
+                //--- Delete old text objects.
+                let oldText = {};
+                oldText = findObjs({
+                    _type: "text",
+                    _pageid: Campaign().get("playerpageid"),
+                    layer: "objects"
+                });
+                if (_.isEmpty(oldText)) {
+                    log('old text is empty')
+                } else {
+                    _.each(oldText, function(t) {
+                        t.remove();
+                    })
+                }
+                
+                state.Circus.textIDs = {};
+                let s = state.Circus.textIDs;
+                s.act1action1 = makeText(175.75,1293.5,"act1action1");
+                s.act1action2 = makeText(175.75,1363.5,"act1action2");
+                s.act1action3 = makeText(175.75,1433.5,"act1action3");
+                s.act1ant1 = makeText(525.75,1293.5,"act1ant1");
+                s.act1ant2 = makeText(525.75,1363.5,"act1ant2");
+                s.act1ant3 = makeText(525.75,1433.5,"act1ant3");
+                s.act1exc1 = makeText(420.75,1293.5,"act1exc1");
+                s.act1exc2 = makeText(420.75,1363.5,"act1exc2");
+                s.act1exc3 = makeText(420.75,1433.5,"act1exc3");
+                s.act1perfDC = makeText(525.75,1223.5,"act1perfDC");
+                s.act1perfLevel = makeText(420.75,1223.5,"act1perfLevel");
+                s.act1perf = makeText(228.25,1223.5,"act1perf");
+                s.act1result1 = makeText(315.75,1293.5,"act1result1");
+                s.act1result2 = makeText(315.75,1363.5,"act1result2");
+                s.act1result3 = makeText(315.75,1433.5,"act1result3");
+                s.act2act1 = makeText(175.75,1678.5,"act2act1");
+                s.act2act2 = makeText(175.75,1748.5,"act2act2");
+                s.act2act3 = makeText(175.75,1818.5,"act2act3");
+                s.act2ant1 = makeText(525.75,1678.5,"act2ant1");
+                s.act2ant2 = makeText(525.75,1748.5,"act2ant2");
+                s.act2ant3 = makeText(525.75,1818.5,"act2ant3");
+                s.act2exc1 = makeText(420.75,1678.5,"act2exc1");
+                s.act2exc2 = makeText(420.75,1748.5,"act2exc2");
+                s.act2exc3 = makeText(420.75,1818.5,"act2exc3");
+                s.act2perfDC = makeText(525.75,1608.5,"act2perfDC");
+                s.act2perfLevel = makeText(420.75,1608.5,"act2perfLevel");
+                s.act2perf = makeText(228.25,1608.5,"act2perf");
+                s.act2result1 = makeText(315.75,1678.5,"act2result1");
+                s.act2result2 = makeText(315.75,1748.5,"act2result2");
+                s.act2result3 = makeText(315.75,1818.5,"act2result3");
+                s.act3act1 = makeText(175.75,2011,"act3act1");
+                s.act3act2 = makeText(175.75,2081,"act3act2");
+                s.act3act3 = makeText(175,2152,"act3act3");
+                s.act3ant1 = makeText(525.75,2011,"act3ant1");
+                s.act3ant2 = makeText(525.75,2081,"act3ant2");
+                s.act3ant3 = makeText(525.75,2151,"act3ant3");
+                s.act3exc1 = makeText(420.75,2011,"act3exc1");
+                s.act3exc2 = makeText(420.75,2081,"act3exc2");
+                s.act3exc3 = makeText(420.75,2151,"act3exc3");
+                s.act3perfDC = makeText(525.75,1941,"act3perfDC");
+                s.act3perfLevel = makeText(424,1941,"act3perfLevel");
+                s.act3perf = makeText(231.5,1941,"act3perf");
+                s.act3result1 = makeText(301.5,2011,"act3result1");
+                s.act3result2 = makeText(301.5,2080.5,"act3result2");
+                s.act3result3 = makeText(298.25,2151,"act3result3");
+                s.act4act1 = makeText(683.25,1293.5,"act4act1");
+                s.act4act2 = makeText(683.25,1363.5,"act4act2");
+                s.act4act3 = makeText(683.25,1433.5,"act4act3");
+                s.act4ant1 = makeText(1034,1296,"act4ant1");
+                s.act4ant2 = makeText(1034,1365.5,"act4ant2");
+                s.act4ant3 = makeText(1033.25,1433.5,"act4ant3");
+                s.act4exc1 = makeText(928.25,1293.5,"act4exc1");
+                s.act4exc2 = makeText(929,1365.5,"act4exc2");
+                s.act4exc3 = makeText(928.25,1433.5,"act4exc3");
+                s.act4perfDC = makeText(1034,1226,"act4perfDC");
+                s.act4perfLevel = makeText(928.25,1223.5,"act4perfLevel");
+                s.act4perf = makeText(735.75,1223.5,"act4perf");
+                s.act4result1 = makeText(824,1296,"act4result1");
+                s.act4result2 = makeText(824,1365.5,"act4result2");
+                s.act4result3 = makeText(823.25,1433.5,"act4result3");
+                s.act5act1 = makeText(683.25,1678.5,"act5act1");
+                s.act5act2 = makeText(683.25,1748.5,"act5act2");
+                s.act5act3 = makeText(683.25,1818.5,"act5act3");
+                s.act5ant1 = makeText(1033.25,1678.5,"act5ant1");
+                s.act5ant2 = makeText(1033.25,1748.5,"act5ant2");
+                s.act5ant3 = makeText(1033.25,1818.5,"act5ant3");
+                s.act5exc1 = makeText(928.25,1678.5,"act5exc1");
+                s.act5exc2 = makeText(928.25,1748.5,"act5exc2");
+                s.act5exc3 = makeText(928.25,1818.5,"act5exc3");
+                s.act5perfDC = makeText(1033.25,1608.5,"act5perfDC");
+                s.act5perfLevel = makeText(928.25,1608.5,"act5perfLevel");
+                s.act5perf = makeText(735.75,1608.5,"act5perf");
+                s.act5result1 = makeText(823.25,1678.5,"act5result1");
+                s.act5result2 = makeText(823.25,1748.5,"act5result2");
+                s.act5result3 = makeText(823.25,1818.5,"act5result3");
+                s.act6act1 = makeText(682.5,2012.5,"act6act1");
+                s.act6act2 = makeText(682.5,2082.5,"act6act2");
+                s.act6act3 = makeText(682.5,2152.5,"act6act3");
+                s.act6ant1 = makeText(1032.5,2012.5,"act6ant1");
+                s.act6ant2 = makeText(1032.5,2082.5,"act6ant2");
+                s.act6ant3 = makeText(1032.5,2152.5,"act6ant3");
+                s.act6exc1 = makeText(927.5,2012.5,"act6exc1");
+                s.act6exc2 = makeText(927.5,2082.5,"act6exc2");
+                s.act6exc3 = makeText(927.5,2152.5,"act6exc3");
+                s.act6perfDC = makeText(1032.5,1942.5,"act6perfDC");
+                s.act6perfLevel = makeText(931.5,1941,"act6perfLevel");
+                s.act6perf = makeText(735,1942.5,"act6perf");
+                s.act6result1 = makeText(809,2011,"act6result1");
+                s.act6result2 = makeText(809,2080.5,"act6result2");
+                s.act6result3 = makeText(822.5,2152.5,"act6result3");
+                s.act7act1 = makeText(1208.25,1293.5,"act7act1");
+                s.act7act2 = makeText(1208.25,1363.5,"act7act2");
+                s.act7act3 = makeText(1208.25,1433.5,"act7act3");
+                s.act7ant1 = makeText(1539,1293,"act7ant1");
+                s.act7ant2 = makeText(1539,1362.5,"act7ant2");
+                s.act7ant3 = makeText(1540.75,1433.5,"act7ant3");
+                s.act7exc1 = makeText(1435.75,1293.5,"act7exc1");
+                s.act7exc2 = makeText(1434,1362.5,"act7exc2");
+                s.act7exc3 = makeText(1435.75,1433.5,"act7exc3");
+                s.act7perfDC = makeText(1539,1223,"act7perfDC");
+                s.act7perfLevel = makeText(1435.75,1223.5,"act7perfLevel");
+                s.act7perf = makeText(1243.25,1223.5,"act7perf");
+                s.act7result1 = makeText(1329,1293,"act7result1");
+                s.act7result2 = makeText(1329,1362.5,"act7result2");
+                s.act7result3 = makeText(1330.75,1433.5,"act7result3");
+                s.adAnt = makeText(1208.25,296,"adAnt");
+                s.adGP = makeText(910.75,296,"adGP");
+                s.adTier = makeText(560.75,296,"adTier");
+                s.circusName = makeText(613.25,173.5,"circusName");
+                s.date = makeText(1225.75,173.5,"date");
+                s.day1act = makeText(507.5,367.5,"day1act");
+                s.d1Ant = makeText(1208.25,366,"d1Ant");
+                s.day2act = makeText(508.25,401,"day2act");
+                s.d2Ant = makeText(1208.25,401,"d2Ant");
+                s.day3act = makeText(508.25,436,"day3act");
+                s.d3Ant = makeText(1208.25,436,"d3Ant");
+                s.day4act = makeText(508.25,471,"day4act");
+                s.d4Ant = makeText(1208.25,471,"d4Ant");
+                s.day5act = makeText(508.25,506,"day5act");
+                s.d5Ant = makeText(1208.25,506,"d5Ant");
+                s.day6act = makeText(508.25,541,"day6act");
+                s.d6Ant = makeText(1207.5,542.5,"d6Ant");
+                s.finalAnt = makeText(1365,1802.5,"finalAnt");
+                s.finalExc = makeText(1365.75,1713.5,"finalExc");
+                s.finalPayout = makeText(1365.75,1976,"finalPayout");
+                s.finalPres = makeText(1365.75,1888.5,"finalPres");
+                s.nonPerf1 = makeText(1033.25,698.5,"nonPerf1");
+                s.nonPerf2 = makeText(1033.25,768.5,"nonPerf2");
+                s.nonPerf3 = makeText(1033.25,838.5,"nonPerf3");
+                s.nonPerf4 = makeText(1033.25,908.5,"nonPerf4");
+                s.nonRole1 = makeText(1400.75,698.5,"nonRole1");
+                s.nonRole2 = makeText(1400.75,768.5,"nonRole2");
+                s.nonRole3 = makeText(1400.75,838.5,"nonRole3");
+                s.nonRole4 = makeText(1400.75,908.5,"nonRole4");
+                s.randomEvent = makeText(1243.25,996,"randomEvent");
+                s.settlementName = makeText(613.25,208.5,"settlementName");
+                s.sAnt = makeText(1487.5,385,"sAnt");
+                s.sExc = makeText(1487.5,297.5,"sExc");
+                s.sMaxAnt = makeText(1487.5,472.5,"sMaxAnt");
+                s.sPres = makeText(1487.5,210,"sPres");
+                s.tempUpgrade1 = makeText(473.25,943.5,"tempUpgrade1");
+                s.tempUpgrade2 = makeText(473.25,978.5,"tempUpgrade2");
+                s.tempUpgrade3 = makeText(472.75,1013,"tempUpgrade3");
+                s.tempUpgrade4 = makeText(472.75,1048,"tempUpgrade4");
+                
+            }
 
-            // ================NEW SETUP===============
+            // ================SETUP===============
             if (params[1] == "setup") {
                 // Clear state
                 state.Circus.textIDs = {};
@@ -159,17 +340,18 @@ const Circus = (() => {
                         font_size: 32
                     });
                     state.Circus.textIDs[name] = newObj.id;
-                    //log(newObj.get("text") + " Top: " + newObj.get("top") + " Left: " + newObj.get("left"));
+                    log(newObj.get("text") + " Top: " + newObj.get("top") + " Left: " + newObj.get("left"));
                 })
             }
             
             if (params[1] == "change") {
                 let target = params[2];
                 let input = params[3];
-                //log(state.Circus.textIDs[target] + "!!!!")
+                log(state.Circus.textIDs[target] + "!!!!")
                 if (typeof state.Circus.textIDs[target] != "undefined"){
                     if (input == undefined) input = " ";
                     let obj = getObj("text", state.Circus.textIDs[target]);
+                    log(obj.id)
                     obj.set("text", input);
                     
                     
