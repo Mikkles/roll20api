@@ -3,12 +3,13 @@
 //CURRENTLY NOT WORKING.
 const Circus = (() => {
     var scriptName = "Roustabout";
+    var version = "1.3";
     
     //Make a text object and return its ID.
     makeText = (x, y, defaultText) => {
         let newObj = createObj('text', {
             pageid: Campaign().get("playerpageid"),
-            layer: "objects",
+            layer: "map",
             top: y,
             left: x,
             text: defaultText,
@@ -24,12 +25,13 @@ const Circus = (() => {
         + "[Settlement Name](!circus change settlementName &#34;?{Settlement Name}&#34;) "
         + "[Circus Name](!circus change circusName &#34;?{Circus Name}&#34;) "
         + "[Date](!circus change date &#34;?{Date - eg Desmus 1}&#34;) "
-        + "<br />**Starting Stats** : [Set All except Prestige](!circus change sExc &#34;?{Starting Excitement}&#34;&#13;!circus change sAnt &#34;?{Starting Anticipation}&#34;)<br />"
+        + "<br />**Starting Stats** : [Reset Exc and Ant](!circus change sExc sAnt 0)<br />"
         + "[Prestige](!circus change sPres &#34;?{Starting Prestige}&#34;) "
         + "[Excitment](!circus change sExc &#34;?{Starting Excitement}&#34;) "
         + "[Anticipation](!circus change sAnt &#34;?{Starting Anticipation}&#34;) "
         + "[Max ANT](!circus change sMaxAnt &#34;?{Max Anticipation}&#34;) "
-        + "<br />**Downtime Activities** [Advertisements](!circus change adTier &#34;?{Advert Tier}&#34;&#13;!circus change adGP &#34;?{Advert GP}&#34;&#13;!circus change adAnt &#34;?{Advert Anticipation}&#34;) <br />"
+        + "<br />**Downtime** [Advertisements](!circus change adTier &#34;?{Advert Tier}&#34;&#13;!circus change adGP &#34;?{Advert GP}&#34;&#13;!circus change adAnt &#34;?{Advert Anticipation}&#34;) "
+        + "[Clear Downtime](!circus change day1act day2act day3act day4act day5act day6act d1Ant d2Ant d3Ant d4Ant d5Ant d6Ant adTier adGP adAnt &#34; &#34;) <br />"
         + "[Day 1](!circus change day1act &#34;?{Day 1 Activity}&#34;&#13;!circus change d1Ant &#34;?{Day 1 Anticipation}&#34;) "
         + "[Day 2](!circus change day2act &#34;?{Day 2 Activity}&#34;&#13;!circus change d2Ant &#34;?{Day 2 Anticipation}&#34;) "
         + "[Day 3](!circus change day3act &#34;?{Day 3 Activity}&#34;&#13;!circus change d3Ant &#34;?{Day 3 Anticipation}&#34;) "
@@ -41,14 +43,14 @@ const Circus = (() => {
         + "[Upgrade 2](!circus change tempUpgrade2 &#34;?{Temp Upgrade 2}&#34;) "
         + "[Upgrade 3](!circus change tempUpgrade3 &#34;?{Temp Upgrade 3}&#34;) "
         + "[Upgrade 4](!circus change tempUpgrade4 &#34;?{Temp Upgrade 4}&#34;) "
-        + "<br /> **Non Performers** <br />"
+        + "<br /> **Non Performers** [Clear Non Performers](!circus change nonPerfGroup &#34; &#34;)<br />"
         + "[Role 1](!circus change nonPerf1 &#34;?{Character}&#34;&#13;!circus change nonRole1 &#34;?{Role}&#34;) "
         + "[Role 2](!circus change nonPerf2 &#34;?{Character}&#34;&#13;!circus change nonRole2 &#34;?{Role}&#34;) "
         + "[Role 3](!circus change nonPerf3 &#34;?{Character}&#34;&#13;!circus change nonRole3 &#34;?{Role}&#34;) "
         + "[Role 4](!circus change nonPerf4 &#34;?{Character}&#34;&#13;!circus change nonRole4 &#34;?{Role}&#34;) "
         + "<br /> **Random Event** <br />"
         + "[Random Event](!circus change randomEvent &#34;?{Event}&#34;) "
-        + "<br /> **ACT 1** <br />"
+        + "<br /> **ACT 1** [Clear](!circus change act1perf act1perfDC act1perfLevel act1action1 act1action2 act1action3 &#34; &#34;) <br /> " 
         + "[Performer](!circus change act1perf &#34;?{Act 1 Performer}&#34;&#13;!circus change act1perfLevel &#34;?{Act 1 Level}&#34;&#13;!circus change act1perfDC &#34;?{Act 1 DC}&#34;) "
         + "[Action 1](!circus change act1action1 &#34;?{Action 1|Perform|Clowns|Pass}&#34;&#13;!circus change act1result1 &#34;?{Action 1 Result|Critical|Success|Failure|Fumble}&#34;&#13;!circus change act1exc1 &#34;?{Action 1 Excitement}&#34;&#13;!circus change act1ant1 &#34;?{Action 1 Anticipation}&#34;) "
         + "[Action 2](!circus change act1action2 &#34;?{Action 2|Perform|Clowns|Pass}&#34;&#13;!circus change act1result2 &#34;?{Action 2 Result|Critical|Success|Failure|Fumble}&#34;&#13;!circus change act1exc2 &#34;?{Action 2 Excitement}&#34;&#13;!circus change act1ant2 &#34;?{Action 2 Anticipation}&#34;) "
@@ -91,19 +93,17 @@ const Circus = (() => {
         
         if (!state.Circus) {
             state.Circus = {
-                version: 1.1,
+                version: 1.2,
                 textIDs: {}
             }
             log("state.Circus being made again");
         } 
-        //--Finally, send chat menu.
-        //chatMenu();
-        
     });
 
    //=====ON MESSAGE=======
     on("chat:message", function(msg) {
         if (msg.type == "api" && msg.content.indexOf("!circus") === 0) {
+
 
             //---Split msg into parameters.
             var params = msg.content.match(/\w+|"[^"]+"/g),
@@ -111,7 +111,9 @@ const Circus = (() => {
             while (i--) {
                 params[i] = params[i].replace(/"/g, "");
             }
-            log(params);
+            
+            params.shift();
+            //log(params);
 
             //---Safety Check
             var page = getObj("page", Campaign().get("playerpageid"));
@@ -124,17 +126,17 @@ const Circus = (() => {
             }
             // =====================FUNCTIONALITY=====================
             // =========CALL MENU===================
-            if (params[1] == "menu"){ chatMenu(); }
+            if (params[0] == "menu"){ chatMenu(); }
             
             //==========(NEW) initialize==========
-            if (params[1] == "init") {
+            if (params[0] == "init") {
                 
                 //--- Delete old text objects.
                 let oldText = {};
                 oldText = findObjs({
                     _type: "text",
                     _pageid: Campaign().get("playerpageid"),
-                    layer: "objects"
+                    layer: "map"
                 });
                 if (_.isEmpty(oldText)) {
                     log('old text is empty')
@@ -145,6 +147,7 @@ const Circus = (() => {
                 }
                 
                 state.Circus.textIDs = {};
+
                 let s = state.Circus.textIDs;
                 s.act1action1 = makeText(175.75,1293.5,"act1action1");
                 s.act1action2 = makeText(175.75,1363.5,"act1action2");
@@ -291,9 +294,14 @@ const Circus = (() => {
                 s.tempUpgrade3 = makeText(472.75,1013,"tempUpgrade3");
                 s.tempUpgrade4 = makeText(472.75,1048,"tempUpgrade4");
                 
+                
+                
+                
+                
             }
 
-            // ================SETUP===============
+            // ================SETUP=============== (OLD INITALIZE)
+            /*
             if (params[1] == "setup") {
                 // Clear state
                 state.Circus.textIDs = {};
@@ -342,59 +350,43 @@ const Circus = (() => {
                     state.Circus.textIDs[name] = newObj.id;
                     log(newObj.get("text") + " Top: " + newObj.get("top") + " Left: " + newObj.get("left"));
                 })
-            }
+            }*/
             
-            if (params[1] == "change") {
-                let target = params[2];
-                let input = params[3];
-                log(state.Circus.textIDs[target] + "!!!!")
+             //Version 1.2 Change
+             /*
+            if (params[0] == "change") {
+                let target = params[1];
+                let input = params[2];
                 if (typeof state.Circus.textIDs[target] != "undefined"){
-                    if (input == undefined) input = " ";
                     let obj = getObj("text", state.Circus.textIDs[target]);
-                    log(obj.id)
-                    obj.set("text", input);
-                    
-                    
-                    
-                    
+                    if (Array.isArray(input)) {
+                        _.each(input, function(current) {
+                        obj.set("text", current);
+                        })
+                    } else {
+                        if (input == undefined) input = " ";
+                        obj.set("text", input);
+                    }
+        
                 } else {
                     sendChat(scriptName, "/w gm Error! " + target + " not found, or there was no input!");
                 }
+            }*/
+        
             
-            }
-            
-            /*
-            if (params[1] == "reset") {
-                let target = params[2];
-                let target2 = params[3];
+            //VERSION 1.3 CHANGE
+            if (params[0] == "change2") {
+                params.shift();
                 
-                switch(target){
-                    
-                    case "act":
-                        
-                        switch(target2) {
-                            case "all":
-                                let objNames = findObjs({
-                                    pageid: Campaign().get("playerpageid"),
-                                    type: "text",
-                                    layer: "objects",
-                                });
-                                break;
-                            
-                            default:
-                                sendChat(scriptName, "/w gm Error! " + target2 + " not found.");
-                                break;
-                            
-                        
-                        }
-                        break;
-                        
-                    default:
-                        sendChat(scriptName, "/w gm Error! " + target + " not found.");
-                        break;
-                }
+                let input = params.pop();
+                
+                
+                _.each(params, function(target) {
+                    let obj = getObj("text", state.Circus.textIDs[target]);
+                    obj.set("text", input);
+                })
             }
-            */
+            
         }
     })
 })();
